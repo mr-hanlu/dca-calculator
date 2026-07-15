@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>定投收益计算器</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --text: #1f2933;
+      --muted: #637083;
+      --line: #d9dee7;
+      --accent: #0f766e;
+      --accent-dark: #0b5f59;
+      --good: #0d9488;
+      --fee: #b45309;
+      --shadow: 0 16px 40px rgba(31, 41, 51, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    main {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 40px 0;
+    }
+
+    header {
+      margin-bottom: 24px;
+    }
+
+    .site-nav {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 30px;
+    }
+
+    .site-nav a {
+      padding: 9px 13px;
+      border-radius: 7px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 650;
+      text-decoration: none;
+    }
+
+    .site-nav a:hover,
+    .site-nav a[aria-current="page"] {
+      color: var(--accent);
+      background: #e6f4f1;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .subtle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(440px, 500px) minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .inputs,
+    .results {
+      padding: 22px;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field-pair {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .field-pair .field,
+    .inputs > .field:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .value-hint {
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+
+    input {
+      width: 100%;
+      height: 46px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0 12px;
+      color: var(--text);
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
+    }
+
+    .quick-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    button {
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #f9fafb;
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      border-color: var(--accent);
+      color: var(--accent-dark);
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      min-height: 112px;
+      background: #fbfcfd;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--text);
+      font-size: 28px;
+      line-height: 1.15;
+      font-variant-numeric: tabular-nums;
+      overflow-wrap: anywhere;
+    }
+
+    .metric.profit strong,
+    .metric.rate strong {
+      color: var(--good);
+    }
+
+    .metric.fee {
+      grid-column: 1 / -1;
+      min-height: 96px;
+    }
+
+    .metric.fee strong {
+      color: var(--fee);
+    }
+
+    .bar-wrap {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      background: #ffffff;
+    }
+
+    .stack {
+      display: flex;
+      height: 28px;
+      overflow: hidden;
+      border-radius: 6px;
+      background: #e8edf3;
+    }
+
+    .principal-bar {
+      background: #7c8da6;
+      width: 50%;
+    }
+
+    .profit-bar {
+      background: var(--accent);
+      width: 50%;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: -1px;
+    }
+
+    .dot.principal {
+      background: #7c8da6;
+    }
+
+    .dot.profit {
+      background: var(--accent);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .table-wrap {
+      margin-top: 20px;
+      overflow-x: auto;
+    }
+
+    .table-wrap table {
+      min-width: 620px;
+    }
+
+    th,
+    td {
+      padding: 11px 8px;
+      border-bottom: 1px solid var(--line);
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    th:first-child,
+    td:first-child {
+      text-align: left;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 700;
+      background: #fbfcfd;
+    }
+
+    .note {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      main {
+        width: min(100% - 24px, 520px);
+        padding: 24px 0;
+      }
+
+      h1 {
+        font-size: 26px;
+      }
+
+      .summary {
+        grid-template-columns: 1fr;
+      }
+
+      .metric {
+        min-height: 96px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .field-pair {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <nav class="site-nav" aria-label="计算器导航">
+      <a href="/" aria-current="page">固定收益估算</a>
+      <a href="/backtest/">历史指数回测</a>
+      <a href="/compare/">指数对比</a>
+    </nav>
+
+    <header>
+      <h1>定投收益计算器</h1>
+      <p class="subtle">输入首次投入、每月定投金额、年化收益率、管理费率和投资年限，计算本金、期末金额、收益与累计费用。</p>
+    </header>
+
+    <div class="layout">
+      <section class="inputs" aria-label="输入参数">
+        <div class="field-pair">
+          <div class="field">
+            <label for="initial">首次投入（底仓） <span class="value-hint">元</span></label>
+            <input id="initial" type="number" min="0" step="1000" value="100000" inputmode="decimal">
+            <div class="quick-row" data-target="initial">
+              <button type="button" data-value="0">0</button>
+              <button type="button" data-value="100000">10万</button>
+              <button type="button" data-value="500000">50万</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="monthly">每月定投金额 <span class="value-hint">元</span></label>
+            <input id="monthly" type="number" min="0" step="100" value="5000" inputmode="decimal">
+            <div class="quick-row" data-target="monthly">
+              <button type="button" data-value="1000">1,000</button>
+              <button type="button" data-value="3000">3,000</button>
+              <button type="button" data-value="10000">10,000</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-pair">
+          <div class="field">
+            <label for="annual">假设年化收益率 <span class="value-hint">%</span></label>
+            <input id="annual" type="number" step="0.1" value="8" inputmode="decimal">
+            <div class="quick-row" data-target="annual">
+              <button type="button" data-value="5">5%</button>
+              <button type="button" data-value="8">8%</button>
+              <button type="button" data-value="12">12%</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="managementFee">年管理费率 <span class="value-hint">%</span></label>
+            <input id="managementFee" type="number" min="0" max="99.9" step="0.01" value="0.5" inputmode="decimal">
+            <div class="quick-row" data-target="managementFee">
+              <button type="button" data-value="0.2">0.2%</button>
+              <button type="button" data-value="0.5">0.5%</button>
+              <button type="button" data-value="1">1.0%</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="years">投资年限 <span class="value-hint">年</span></label>
+          <input id="years" type="number" min="0" step="1" value="20" inputmode="decimal">
+          <div class="quick-row" data-target="years">
+            <button type="button" data-value="10">10年</button>
+            <button type="button" data-value="20">20年</button>
+            <button type="button" data-value="30">30年</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="results" aria-label="计算结果">
+        <div class="summary">
+          <div class="metric">
+            <span>投入本金</span>
+            <strong id="principal">-</strong>
+          </div>
+          <div class="metric">
+            <span>期末金额</span>
+            <strong id="futureValue">-</strong>
+          </div>
+          <div class="metric profit">
+            <span>投资收益</span>
+            <strong id="profit">-</strong>
+          </div>
+          <div class="metric rate">
+            <span>总收益率</span>
+            <strong id="returnRate">-</strong>
+          </div>
+          <div class="metric fee">
+            <span>累计管理费</span>
+            <strong id="totalFees">-</strong>
+          </div>
+        </div>
+
+        <div class="bar-wrap">
+          <div class="stack" aria-hidden="true">
+            <div class="principal-bar" id="principalBar"></div>
+            <div class="profit-bar" id="profitBar"></div>
+          </div>
+          <div class="legend">
+            <span><i class="dot principal"></i>本金占比 <strong id="principalShare">-</strong></span>
+            <span><i class="dot profit"></i>收益占比 <strong id="profitShare">-</strong></span>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>年份</th>
+                <th>累计本金</th>
+                <th>期末金额</th>
+                <th>累计收益</th>
+                <th>累计管理费</th>
+              </tr>
+            </thead>
+            <tbody id="yearRows"></tbody>
+          </table>
+        </div>
+
+        <p class="note">首次投入的底仓从投资开始时参与复利；定投资金默认每月月初投入。年化收益率与年管理费率均换算为等效月率，先计算当月收益，再扣除当月管理费。累计管理费为投资期内实际扣除费用之和；若输入的收益率已经扣除管理费，请将管理费率设为 0。结果仅用于估算。</p>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const els = {
+      initial: document.getElementById('initial'),
+      monthly: document.getElementById('monthly'),
+      annual: document.getElementById('annual'),
+      managementFee: document.getElementById('managementFee'),
+      years: document.getElementById('years'),
+      principal: document.getElementById('principal'),
+      futureValue: document.getElementById('futureValue'),
+      profit: document.getElementById('profit'),
+      returnRate: document.getElementById('returnRate'),
+      totalFees: document.getElementById('totalFees'),
+      principalBar: document.getElementById('principalBar'),
+      profitBar: document.getElementById('profitBar'),
+      principalShare: document.getElementById('principalShare'),
+      profitShare: document.getElementById('profitShare'),
+      yearRows: document.getElementById('yearRows')
+    };
+
+    const money = new Intl.NumberFormat('zh-CN', {
+      style: 'currency',
+      currency: 'CNY',
+      maximumFractionDigits: 0
+    });
+
+    const percent = new Intl.NumberFormat('zh-CN', {
+      style: 'percent',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
+    function numeric(input) {
+      const value = Number(input.value);
+      return Number.isFinite(value) ? value : 0;
+    }
+
+    function calculate() {
+      const initial = Math.max(0, numeric(els.initial));
+      const monthly = Math.max(0, numeric(els.monthly));
+      const annualRate = numeric(els.annual) / 100;
+      const annualFeeRate = Math.min(0.999, Math.max(0, numeric(els.managementFee) / 100));
+      const years = Math.max(0, numeric(els.years));
+      const months = Math.round(years * 12);
+      const monthlyRate = Math.pow(1 + annualRate, 1 / 12) - 1;
+      const monthlyFeeRate = 1 - Math.pow(1 - annualFeeRate, 1 / 12);
+
+      let balance = initial;
+      let totalFees = 0;
+      const rows = [];
+
+      for (let month = 1; month <= months; month += 1) {
+        balance += monthly;
+        balance *= 1 + monthlyRate;
+
+        const monthlyFee = balance * monthlyFeeRate;
+        balance -= monthlyFee;
+        totalFees += monthlyFee;
+
+        if (month % 12 === 0 || month === months) {
+          const principal = initial + monthly * month;
+          rows.push({
+            year: month / 12,
+            principal,
+            balance,
+            profit: balance - principal,
+            totalFees
+          });
+        }
+      }
+
+      const principal = initial + monthly * months;
+      const profit = balance - principal;
+      const returnRate = principal > 0 ? profit / principal : 0;
+      const principalShare = balance > 0 ? principal / balance : 0;
+      const profitShare = balance > 0 ? Math.max(0, profit / balance) : 0;
+
+      els.principal.textContent = money.format(principal);
+      els.futureValue.textContent = money.format(balance);
+      els.profit.textContent = money.format(profit);
+      els.returnRate.textContent = percent.format(returnRate);
+      els.totalFees.textContent = money.format(totalFees);
+      els.principalShare.textContent = percent.format(principalShare);
+      els.profitShare.textContent = percent.format(profitShare);
+      els.principalBar.style.width = `${Math.min(100, principalShare * 100)}%`;
+      els.profitBar.style.width = `${Math.min(100, Math.max(0, profitShare * 100))}%`;
+
+      els.yearRows.innerHTML = rows.map((row) => `
+        <tr>
+          <td>第 ${Number.isInteger(row.year) ? row.year : row.year.toFixed(1)} 年</td>
+          <td>${money.format(row.principal)}</td>
+          <td>${money.format(row.balance)}</td>
+          <td>${money.format(row.profit)}</td>
+          <td>${money.format(row.totalFees)}</td>
+        </tr>
+      `).join('');
+    }
+
+    document.querySelectorAll('input').forEach((input) => {
+      input.addEventListener('input', calculate);
+    });
+
+    document.querySelectorAll('button[data-value]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const target = document.getElementById(button.parentElement.dataset.target);
+        target.value = button.dataset.value;
+        calculate();
+      });
+    });
+
+    calculate();
+  </script>
+</body>
+</html>

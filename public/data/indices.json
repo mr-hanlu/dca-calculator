@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "indices": [
+    {
+      "id": "sp500",
+      "name": "标普500",
+      "shortName": "S&P 500",
+      "description": "美国大型上市公司价格指数",
+      "currency": "USD",
+      "dataFile": "/data/sp500.json",
+      "inceptionDate": "1957-03-04",
+      "firstDataDate": "1957-03-29",
+      "lastDataDate": "2026-06-30",
+      "priceType": "price-index",
+      "source": {
+        "provider": "fred",
+        "symbol": "SP500",
+        "label": "长期种子数据 + FRED 最近十年日收盘",
+        "url": "https://fred.stlouisfed.org/series/SP500"
+      }
+    },
+    {
+      "id": "nasdaq100",
+      "name": "纳斯达克100",
+      "shortName": "Nasdaq-100",
+      "description": "纳斯达克市场大型非金融公司价格指数",
+      "currency": "USD",
+      "dataFile": "/data/nasdaq100.json",
+      "inceptionDate": "1985-01-31",
+      "firstDataDate": "1996-06-28",
+      "lastDataDate": "2026-06-30",
+      "priceType": "price-index",
+      "source": {
+        "provider": "nasdaq",
+        "symbol": "NDX",
+        "label": "Nasdaq Historical API",
+        "url": "https://indexes.nasdaq.com/Index/History/NDX"
+      }
+    },
+    {
+      "id": "csi300",
+      "name": "沪深300",
+      "shortName": "CSI 300",
+      "description": "沪深市场大型、流动性较好证券的价格指数",
+      "currency": "CNY",
+      "dataFile": "/data/csi300.json",
+      "inceptionDate": "2005-01-01",
+      "firstDataDate": "2005-01-31",
+      "lastDataDate": "2026-06-30",
+      "priceType": "price-index",
+      "source": {
+        "provider": "eastmoney",
+        "symbol": "1.000300",
+        "label": "东方财富公开行情接口",
+        "url": "https://quote.eastmoney.com/zs000300.html"
+      }
+    },
+    {
+      "id": "csi500",
+      "name": "中证500",
+      "shortName": "CSI 500",
+      "description": "沪深市场中等市值证券的价格指数",
+      "currency": "CNY",
+      "dataFile": "/data/csi500.json",
+      "inceptionDate": "2005-01-01",
+      "firstDataDate": "2005-01-31",
+      "lastDataDate": "2026-06-30",
+      "priceType": "price-index",
+      "source": {
+        "provider": "eastmoney",
+        "symbol": "1.000905",
+        "label": "东方财富公开行情接口",
+        "url": "https://quote.eastmoney.com/zs000905.html"
+      }
+    },
+    {
+      "id": "star50",
+      "name": "科创50",
+      "shortName": "STAR 50",
+      "description": "上海科创板代表性证券的价格指数",
+      "currency": "CNY",
+      "dataFile": "/data/star50.json",
+      "inceptionDate": "2019-12-31",
+      "firstDataDate": "2019-12-31",
+      "lastDataDate": "2026-06-30",
+      "priceType": "price-index",
+      "source": {
+        "provider": "eastmoney",
+        "symbol": "1.000688",
+        "label": "东方财富公开行情接口",
+        "url": "https://quote.eastmoney.com/zs000688.html"
+      }
+    }
+  ]
+}

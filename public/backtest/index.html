@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="使用历史价格指数月末数据，回测定投标普500和纳斯达克100的结果。">
+  <title>指数历史定投回测</title>
+  <link rel="stylesheet" href="/assets/backtest.css">
+</head>
+<body>
+  <main>
+    <nav class="site-nav" aria-label="计算器导航">
+      <a href="/">固定收益估算</a>
+      <a href="/backtest/" aria-current="page">历史指数回测</a>
+      <a href="/compare/">指数对比</a>
+    </nav>
+
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">Historical backtest</p>
+        <h1>指数历史定投回测</h1>
+        <p class="subtle">用每月最后一个交易日的价格指数收盘点位，看看一笔底仓加每月定投在真实历史中的表现。</p>
+      </div>
+      <div class="data-status" aria-live="polite">
+        <span>当前数据</span>
+        <strong id="dataAsOf">加载中…</strong>
+        <small id="sourceLabel"></small>
+      </div>
+    </header>
+
+    <div class="layout">
+      <section class="panel controls" aria-label="回测参数">
+        <div class="field">
+          <label for="indexSelect">回测指数</label>
+          <select id="indexSelect"></select>
+          <p class="field-note" id="indexDescription"></p>
+        </div>
+
+        <div class="field range-field">
+          <label>回测区间</label>
+          <div class="range-control" id="rangeControl">
+            <div class="date-range-display">
+              <button class="date-trigger" id="startDateButton" type="button" aria-haspopup="dialog" aria-expanded="false">
+                <small>开始</small><strong id="startDateLabel">—</strong><span aria-hidden="true">⌄</span>
+              </button>
+              <i class="range-arrow" aria-hidden="true">→</i>
+              <button class="date-trigger" id="endDateButton" type="button" aria-haspopup="dialog" aria-expanded="false">
+                <small>结束</small><strong id="endDateLabel">—</strong><span aria-hidden="true">⌄</span>
+              </button>
+            </div>
+
+            <div class="month-picker" id="monthPicker" role="dialog" aria-modal="false" aria-labelledby="pickerHeading" hidden>
+              <div class="picker-topline">
+                <div>
+                  <span class="picker-eyebrow" id="pickerTargetLabel">选择开始月份</span>
+                  <strong id="pickerHeading">选择月份</strong>
+                </div>
+                <button class="picker-close" id="pickerClose" type="button" aria-label="关闭月份选择器">×</button>
+              </div>
+              <div class="picker-navigation">
+                <button id="pickerPrevious" type="button" aria-label="上一年">‹</button>
+                <strong class="picker-period" id="pickerPeriod">—</strong>
+                <button id="pickerNext" type="button" aria-label="下一年">›</button>
+              </div>
+              <div class="month-grid" id="monthGrid" aria-label="月份"></div>
+              <p class="picker-hint">使用左右按钮切换年份；不可用月份已禁用。</p>
+            </div>
+          </div>
+
+          <div class="range-meta">
+            <span id="rangeDuration">—</span>
+            <span id="rangeNotice" role="status"></span>
+          </div>
+          <div class="quick-row" aria-label="快速选择回测年限">
+            <button type="button" data-months="60">近 5 年</button>
+            <button type="button" data-months="120">近 10 年</button>
+            <button type="button" data-months="240">近 20 年</button>
+            <button type="button" data-months="all">全部</button>
+          </div>
+        </div>
+
+        <div class="field-pair money-fields">
+          <div class="field">
+            <label for="initial">首次投入 <span>元</span></label>
+            <input id="initial" type="number" min="0" step="1000" value="100000" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label for="monthly">每月定投 <span>元</span></label>
+            <input id="monthly" type="number" min="0" step="100" value="5000" inputmode="decimal">
+          </div>
+        </div>
+
+        <div class="field fee-field">
+          <label for="managementFee">年管理费率 <span>%</span></label>
+          <input id="managementFee" type="number" min="0" max="99.9" step="0.01" value="0.5" inputmode="decimal">
+          <div class="fee-quick-row">
+            <button type="button" data-fee="0">0%</button>
+            <button type="button" data-fee="0.2">0.2%</button>
+            <button type="button" data-fee="0.5">0.5%</button>
+            <button type="button" data-fee="1">1%</button>
+          </div>
+        </div>
+
+        <div class="assumptions">
+          <strong>本页采用的简单口径</strong>
+          <ul>
+            <li>每月最后一个交易日投入，允许碎股</li>
+            <li>使用价格指数，不含分红再投资</li>
+            <li>按输入的年管理费率换算为等效月费率</li>
+            <li>不含汇率、交易费用、税费和跟踪误差</li>
+          </ul>
+        </div>
+        <p class="error" id="errorMessage" role="alert"></p>
+      </section>
+
+      <section class="panel results" aria-label="回测结果">
+        <div class="summary">
+          <article class="metric">
+            <span>累计投入</span>
+            <strong id="principal">—</strong>
+          </article>
+          <article class="metric primary">
+            <span>期末资产</span>
+            <strong id="futureValue">—</strong>
+          </article>
+          <article class="metric">
+            <span>累计收益</span>
+            <strong id="profit">—</strong>
+          </article>
+          <article class="metric">
+            <span>定投总收益率</span>
+            <strong id="returnRate">—</strong>
+          </article>
+          <article class="metric compact">
+            <span>指数区间涨幅（非定投）</span>
+            <strong id="priceReturn">—</strong>
+          </article>
+          <article class="metric compact">
+            <span>指数年化涨跌</span>
+            <strong id="priceAnnualized">—</strong>
+          </article>
+          <article class="metric compact">
+            <span>累计管理费</span>
+            <strong id="totalFees">—</strong>
+          </article>
+        </div>
+
+        <p class="comparison-note"><strong>指数区间涨幅</strong> = 结束月份指数点位 ÷ 开始月份指数点位 − 1。它表示指数本身在这段时间涨了多少，只用于对比，不是你的定投收益率。</p>
+
+        <div class="chart-card">
+          <div class="chart-heading">
+            <div>
+              <h2>资产变化</h2>
+              <p id="periodSummary">—</p>
+            </div>
+            <div class="legend"><span><i class="asset"></i>资产</span><span><i class="capital"></i>本金</span></div>
+          </div>
+          <svg id="chart" viewBox="0 0 760 280" role="img" aria-label="资产与累计本金历史曲线"></svg>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>年份</th><th>累计投入</th><th>期末资产</th><th>累计收益</th></tr></thead>
+            <tbody id="yearRows"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <p>历史数据仅用于计算演示，不构成投资建议。指数本身不可直接投资，实际产品还会受到费用、汇率和跟踪误差影响。</p>
+    </footer>
+  </main>
+  <div class="picker-backdrop" id="pickerBackdrop" hidden></div>
+  <script type="module" src="/assets/backtest-page.js"></script>
+</body>
+</html>

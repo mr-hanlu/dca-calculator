@@ -1,0 +1,12 @@
+{
+  "name": "dca-calculator",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "data:update": "node scripts/update-data.mjs",
+    "data:check": "node scripts/check-data.mjs",
+    "index:add": "node scripts/add-index.mjs",
+    "test": "node --test"
+  }
+}
