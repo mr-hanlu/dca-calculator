@@ -1,6 +1,8 @@
 # 定投收益计算器
 
-一个零运行时依赖的静态定投工具，包含固定收益估算和指数历史定投回测，可直接部署到 Cloudflare Pages。
+一个零运行时依赖的静态定投工具，包含固定收益估算、指数历史定投回测和多指数对比，可直接部署到 Cloudflare Workers 静态资源托管。
+
+**在线体验：** [https://dca-calculator.mrhanlu224.workers.dev/](https://dca-calculator.mrhanlu224.workers.dev/)
 
 ## 功能
 

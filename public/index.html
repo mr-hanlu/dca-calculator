@@ -85,6 +85,10 @@
       align-items: start;
     }
 
+    .layout > * {
+      min-width: 0;
+    }
+
     section {
       background: var(--panel);
       border: 1px solid var(--line);
@@ -307,7 +311,7 @@
 
     @media (max-width: 980px) {
       .layout {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
       }
     }
 
@@ -331,6 +335,26 @@
     }
 
     @media (max-width: 600px) {
+      .site-nav {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px;
+        margin-bottom: 24px;
+      }
+
+      .site-nav a {
+        min-width: 0;
+        padding: 8px 4px;
+        font-size: 12px;
+        text-align: center;
+        white-space: nowrap;
+      }
+
+      .inputs,
+      .results {
+        padding: 18px;
+      }
+
       .field-pair {
         grid-template-columns: 1fr;
       }
