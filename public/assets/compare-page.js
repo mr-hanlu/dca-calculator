@@ -8,7 +8,8 @@ const els = Object.fromEntries([
   'pickerPrevious', 'pickerNext', 'pickerPeriod', 'monthGrid', 'pickerBackdrop'
 ].map((id) => [id, document.getElementById(id)]));
 
-const colors = ['#0f766e', '#315f9d', '#d97706', '#7c3aed', '#db2777'];
+const MAX_SELECTED = 5;
+const colors = ['#0f766e', '#315f9d', '#d97706', '#7c3aed', '#db2777', '#0891b2'];
 const percent = new Intl.NumberFormat('zh-CN', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
 let registry = [];
 let datasets = new Map();
@@ -73,7 +74,7 @@ function renderIndexChoices() {
     const label = document.createElement('label');
     label.className = 'index-option';
     label.innerHTML = `
-      <input type="checkbox" value="${index.id}" checked>
+      <input type="checkbox" value="${index.id}" ${position < MAX_SELECTED ? 'checked' : ''}>
       <span><strong>${index.name}</strong><small>${index.shortName} · ${index.currency}</small></span>
       <i style="background:${colorFor(index.id)}"></i>
     `;
@@ -84,7 +85,7 @@ function renderIndexChoices() {
 
 function handleIndexChange(event) {
   const count = els.indexChecks.querySelectorAll('input:checked').length;
-  if (count < 2 || count > 5) {
+  if (count < 2 || count > MAX_SELECTED) {
     event.target.checked = !event.target.checked;
     setError(count < 2 ? '至少选择两个指数进行对比' : '最多选择五个指数');
     return;

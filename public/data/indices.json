@@ -74,6 +74,24 @@
       }
     },
     {
+      "id": "csia500",
+      "name": "中证A500",
+      "shortName": "CSI A500",
+      "description": "覆盖各行业代表性龙头公司的中国大盘宽基价格指数",
+      "currency": "CNY",
+      "dataFile": "/data/csia500.json",
+      "inceptionDate": "2004-12-31",
+      "firstDataDate": "2005-01-31",
+      "lastDataDate": "2026-06-30",
+      "priceType": "price-index",
+      "source": {
+        "provider": "eastmoney",
+        "symbol": "1.000510",
+        "label": "东方财富公开行情接口",
+        "url": "https://quote.eastmoney.com/zs000510.html"
+      }
+    },
+    {
       "id": "star50",
       "name": "科创50",
       "shortName": "STAR 50",

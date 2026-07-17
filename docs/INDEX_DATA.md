@@ -30,6 +30,7 @@ npm run data:check
 npm run data:update -- --index sp500
 npm run data:update -- --index nasdaq100
 npm run data:update -- --index csi300
+npm run data:update -- --index csia500
 ```
 
 脚本会更新对应的数据文件和 `public/data/indices.json` 中的 `firstDataDate`、`lastDataDate`。确认命令输出的起止日期合理后，再提交这些文件。
