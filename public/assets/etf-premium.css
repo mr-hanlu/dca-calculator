@@ -1,0 +1,192 @@
+@import url('/assets/backtest.css');
+
+.premium-panel { padding: 22px; }
+
+.premium-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.group-tabs,
+.range-tabs {
+  display: inline-flex;
+  gap: 3px;
+  padding: 4px;
+  border-radius: 9px;
+  background: #eef2f5;
+}
+
+.group-tabs button {
+  min-width: 138px;
+  height: 38px;
+  padding: 0 17px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 720;
+}
+
+.range-tabs button {
+  height: 32px;
+  padding: 0 11px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 680;
+}
+
+.group-tabs button[aria-pressed="true"],
+.range-tabs button[aria-pressed="true"] {
+  background: #fff;
+  color: var(--accent);
+  box-shadow: 0 2px 7px rgba(24, 33, 47, .1);
+}
+
+.chart-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+  padding: 0 2px;
+}
+
+.chart-heading h2,
+.section-heading h2,
+.method-card h2 {
+  margin: 0 0 5px;
+  font-size: 17px;
+}
+
+.chart-heading p,
+.section-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.premium-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px 15px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.premium-legend span { display: inline-flex; gap: 6px; align-items: center; }
+.premium-legend i, .etf-dot { width: 9px; height: 9px; border-radius: 50%; }
+
+.premium-chart-stage { position: relative; margin-top: 10px; }
+#premiumChart { display: block; width: 100%; height: auto; min-height: 300px; touch-action: pan-y; }
+
+.premium-tooltip {
+  position: absolute;
+  z-index: 4;
+  top: 16px;
+  width: 220px;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .97);
+  box-shadow: 0 12px 30px rgba(24, 33, 47, .15);
+  pointer-events: none;
+  transform: translateX(12px);
+  font-size: 11px;
+}
+
+.premium-tooltip.right { transform: translateX(calc(-100% - 12px)); }
+.premium-tooltip strong { display: block; margin-bottom: 7px; font-size: 12px; }
+.premium-tooltip-row { display: grid; grid-template-columns: 9px 1fr auto; gap: 6px; align-items: center; margin-top: 6px; }
+.premium-tooltip-row i { display: block; width: 9px; height: 9px; border-radius: 50%; }
+.premium-tooltip-row b { font-weight: 650; }
+.premium-tooltip-row span:last-child { font-variant-numeric: tabular-nums; font-weight: 720; }
+
+.chart-note { margin: 2px 3px 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
+
+.latest-section { margin-top: 24px; }
+.section-heading { display: flex; justify-content: space-between; gap: 16px; align-items: flex-end; margin-bottom: 12px; padding: 0 2px; }
+.latest-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+
+.latest-card {
+  position: relative;
+  min-width: 0;
+  padding: 17px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.latest-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--series-color);
+}
+
+.latest-card.is-lowest { border-color: #b9dcd6; background: linear-gradient(145deg, #f0faf8, #fff 60%); }
+.latest-card-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+.latest-card h3 { margin: 0; font-size: 14px; line-height: 1.35; }
+.latest-card-code { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.lowest-badge { padding: 4px 7px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-size: 9px; font-weight: 760; white-space: nowrap; }
+.latest-rate { display: block; margin: 17px 0 5px; color: var(--series-color); font-size: clamp(25px, 3vw, 32px); font-weight: 780; font-variant-numeric: tabular-nums; letter-spacing: -.03em; }
+.latest-meta { color: var(--muted); font-size: 11px; line-height: 1.6; }
+.latest-meta strong { color: var(--text); font-weight: 700; }
+
+.stats-panel { margin-top: 20px; padding: 20px; }
+.stats-heading { margin-bottom: 13px; }
+.premium-table-wrap { max-height: none; margin-top: 0; }
+.premium-table-wrap table { min-width: 760px; }
+.premium-table-wrap td:first-child { min-width: 150px; }
+.etf-cell { display: flex; gap: 8px; align-items: center; font-weight: 680; }
+.etf-cell small { color: var(--muted); font-size: 10px; font-weight: 520; }
+.rate-positive { color: #c2413b; }
+.rate-negative { color: #087f5b; }
+
+.method-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, .9fr);
+  gap: 28px;
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #cbdedb;
+  border-radius: 10px;
+  background: #f3faf8;
+}
+
+.method-card > div { display: flex; gap: 13px; align-items: flex-start; }
+.method-mark { display: grid; flex: 0 0 auto; width: 25px; height: 25px; place-items: center; border-radius: 50%; background: var(--accent); color: #fff; font-family: Georgia, serif; font-size: 15px; font-weight: 700; }
+.method-card p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.method-card ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 11px; line-height: 1.75; }
+.method-card li + li { margin-top: 3px; }
+
+@media (max-width: 820px) {
+  .premium-toolbar { align-items: stretch; flex-direction: column; }
+  .group-tabs, .range-tabs { display: grid; }
+  .group-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .range-tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .group-tabs button { min-width: 0; }
+  .latest-grid { grid-template-columns: 1fr; }
+  .method-card { grid-template-columns: 1fr; gap: 16px; }
+}
+
+@media (max-width: 620px) {
+  .premium-panel, .stats-panel { padding: 16px; }
+  .chart-heading { display: block; }
+  .premium-legend { justify-content: flex-start; margin-top: 12px; }
+  #premiumChart { min-height: 260px; }
+  .premium-tooltip { top: 8px; width: 194px; }
+  .latest-section { margin-top: 20px; }
+  .latest-card { padding: 15px; }
+  .method-card { padding: 16px; }
+}

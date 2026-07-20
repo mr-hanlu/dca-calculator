@@ -198,6 +198,8 @@ footer { margin: 22px 0 0; color: var(--muted); font-size: 12px; line-height: 1.
 
 @media (max-width: 620px) {
   main { width: min(100% - 22px, 520px); padding-top: 20px; }
+  .site-nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 3px; margin-bottom: 24px; }
+  .site-nav a { min-width: 0; padding: 8px 2px; font-size: 11px; text-align: center; white-space: nowrap; }
   .page-header { display: block; }
   .data-status { margin-top: 17px; }
   .field-pair { grid-template-columns: 1fr; }

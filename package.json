@@ -4,8 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "data:update": "node scripts/update-data.mjs",
-    "data:check": "node scripts/check-data.mjs",
+    "data:update": "node scripts/update-all.mjs",
+    "data:update:index": "node scripts/update-data.mjs",
+    "data:update:etf": "node scripts/update-etf-premium.mjs",
+    "data:check": "node scripts/check-all.mjs",
+    "data:check:index": "node scripts/check-data.mjs",
+    "data:check:etf": "node scripts/check-etf-premium.mjs",
     "index:add": "node scripts/add-index.mjs",
     "test": "node --test"
   }

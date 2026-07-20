@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="对比境内标普500与纳斯达克100跨境ETF相对上一期净值的历史溢价率。">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#e6f4f1">
+  <title>ETF 历史溢价率</title>
+  <link rel="stylesheet" href="/assets/etf-premium.css">
+  <link rel="stylesheet" href="/assets/change-calculator.css">
+</head>
+<body>
+  <main>
+    <nav class="site-nav" aria-label="计算器导航">
+      <a href="/">固定收益估算</a>
+      <a href="/backtest/">历史指数回测</a>
+      <a href="/compare/">指数对比</a>
+      <a href="/etf-premium/" aria-current="page">ETF 溢价</a>
+    </nav>
+
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">ETF premium history</p>
+        <h1>ETF 历史溢价率</h1>
+        <p class="subtle">比较同一指数下不同场内 ETF 相对上一期单位净值的价格偏离，辅助识别同组中相对更便宜的交易品种。</p>
+      </div>
+      <div class="data-status" aria-live="polite">
+        <span>当前数据</span>
+        <strong id="dataAsOf">加载中…</strong>
+        <small id="dataFreshness">手动更新 · 静态历史数据</small>
+      </div>
+    </header>
+
+    <section class="panel premium-panel" aria-label="ETF 历史溢价率图表">
+      <div class="premium-toolbar">
+        <div class="group-tabs" id="groupTabs" aria-label="选择跟踪指数"></div>
+        <div class="range-tabs" id="rangeTabs" aria-label="选择历史区间">
+          <button type="button" data-days="30" aria-pressed="false">近 1 月</button>
+          <button type="button" data-days="90" aria-pressed="false">近 3 月</button>
+          <button type="button" data-days="365" aria-pressed="true">近 1 年</button>
+          <button type="button" data-days="all" aria-pressed="false">全部</button>
+        </div>
+      </div>
+
+      <div class="chart-heading">
+        <div>
+          <h2 id="groupTitle">—</h2>
+          <p id="periodSummary">—</p>
+        </div>
+        <div class="premium-legend" id="chartLegend"></div>
+      </div>
+
+      <div class="premium-chart-stage" id="chartStage">
+        <svg id="premiumChart" viewBox="0 0 920 410" role="img" aria-label="多只 ETF 历史溢价率曲线"></svg>
+        <div class="premium-tooltip" id="chartTooltip" hidden></div>
+      </div>
+      <p class="chart-note">0% 表示场内收盘价等于当时采用的上一期单位净值。数值越高，表示相对该净值的交易溢价越高。</p>
+    </section>
+
+    <section class="latest-section" aria-labelledby="latestTitle">
+      <div class="section-heading">
+        <div><h2 id="latestTitle">最新对比</h2><p>历史分位按当前所选时间范围计算</p></div>
+      </div>
+      <div class="latest-grid" id="latestCards"></div>
+    </section>
+
+    <section class="panel stats-panel" aria-labelledby="statsTitle">
+      <div class="section-heading stats-heading">
+        <div><h2 id="statsTitle">历史分布</h2><p>分位越低，代表当前溢价在所选历史区间内相对越低</p></div>
+      </div>
+      <div class="table-wrap premium-table-wrap">
+        <table>
+          <thead><tr><th>ETF</th><th>最新</th><th>当前分位</th><th>P10</th><th>P25</th><th>中位数</th><th>P75</th><th>P90</th></tr></thead>
+          <tbody id="statsRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="method-card" aria-labelledby="methodTitle">
+      <div>
+        <span class="method-mark" aria-hidden="true">i</span>
+        <div>
+          <h2 id="methodTitle">如何理解这条曲线</h2>
+          <p>本页使用“场内收盘价 ÷ 交易日前最近一期单位净值 − 1”计算，净值滞后超过 7 天的数据点会被排除。它是相对上一期净值的历史观察指标，不是盘中 IOPV，也不是买卖建议。</p>
+        </div>
+      </div>
+      <ul>
+        <li>QDII 净值受中美交易时差、汇率和披露延迟影响</li>
+        <li>选择 ETF 时还应比较成交额、买卖价差、费率与申购状态</li>
+        <li>数据由手动更新脚本获取，页面不会在访问时请求第三方行情</li>
+      </ul>
+    </section>
+
+    <p class="error" id="errorMessage" role="alert"></p>
+    <footer><p>历史数据仅用于计算和比较演示，不构成投资建议。免费公开数据源可能延迟或调整，交易前请以基金管理人和交易所披露为准。</p></footer>
+  </main>
+  <script type="module" src="/assets/etf-premium-page.js"></script>
+  <script type="module" src="/assets/change-calculator.js"></script>
+</body>
+</html>
