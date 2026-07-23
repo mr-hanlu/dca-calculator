@@ -11,6 +11,11 @@
     "data:check:index": "node scripts/check-data.mjs",
     "data:check:etf": "node scripts/check-etf-premium.mjs",
     "index:add": "node scripts/add-index.mjs",
-    "test": "node --test"
+    "test": "node --test",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4.113.0"
   }
 }
