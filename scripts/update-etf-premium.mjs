@@ -260,6 +260,12 @@ async function buildDataset(etf, csvRows) {
   if (incomingPoints.length < 30) throw new Error(`${etf.code} 本次只获得 ${incomingPoints.length} 条有效数据，拒绝更新`);
   const existing = await readExistingDataset(etf);
   const points = mergePoints(existing?.points || [], incomingPoints);
+  const dataChanged = JSON.stringify(existing?.points || []) !== JSON.stringify(points);
+  const sources = {
+    price: priceProvider,
+    priceVerifiedBy,
+    nav: navProvider
+  };
   const output = {
     schemaVersion: 1,
     etfId: etf.id,
@@ -269,12 +275,8 @@ async function buildDataset(etf, csvRows) {
     maxNavLagDays: MAX_NAV_LAG_DAYS,
     firstDataDate: points[0]?.[0] || null,
     lastDataDate: points.at(-1)?.[0] || null,
-    generatedAt: new Date().toISOString(),
-    sources: {
-      price: priceProvider,
-      priceVerifiedBy,
-      nav: navProvider
-    },
+    generatedAt: dataChanged ? new Date().toISOString() : existing.generatedAt,
+    sources: dataChanged ? sources : existing.sources,
     summary: summarizePremium(points),
     points
   };

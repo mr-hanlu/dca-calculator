@@ -10,7 +10,7 @@
       "dataFile": "/data/sp500.json",
       "inceptionDate": "1957-03-04",
       "firstDataDate": "1957-03-29",
-      "lastDataDate": "2026-06-30",
+      "lastDataDate": "2026-07-31",
       "priceType": "price-index",
       "source": {
         "provider": "fred",
@@ -28,7 +28,7 @@
       "dataFile": "/data/nasdaq100.json",
       "inceptionDate": "1985-01-31",
       "firstDataDate": "1996-06-28",
-      "lastDataDate": "2026-06-30",
+      "lastDataDate": "2026-07-31",
       "priceType": "price-index",
       "source": {
         "provider": "nasdaq",
@@ -46,7 +46,7 @@
       "dataFile": "/data/csi300.json",
       "inceptionDate": "2005-01-01",
       "firstDataDate": "2005-01-31",
-      "lastDataDate": "2026-06-30",
+      "lastDataDate": "2026-07-31",
       "priceType": "price-index",
       "source": {
         "provider": "eastmoney",
@@ -64,7 +64,7 @@
       "dataFile": "/data/csi500.json",
       "inceptionDate": "2005-01-01",
       "firstDataDate": "2005-01-31",
-      "lastDataDate": "2026-06-30",
+      "lastDataDate": "2026-07-31",
       "priceType": "price-index",
       "source": {
         "provider": "eastmoney",
@@ -82,7 +82,7 @@
       "dataFile": "/data/csia500.json",
       "inceptionDate": "2004-12-31",
       "firstDataDate": "2005-01-31",
-      "lastDataDate": "2026-06-30",
+      "lastDataDate": "2026-07-31",
       "priceType": "price-index",
       "source": {
         "provider": "eastmoney",
@@ -100,7 +100,7 @@
       "dataFile": "/data/star50.json",
       "inceptionDate": "2019-12-31",
       "firstDataDate": "2019-12-31",
-      "lastDataDate": "2026-06-30",
+      "lastDataDate": "2026-07-31",
       "priceType": "price-index",
       "source": {
         "provider": "eastmoney",

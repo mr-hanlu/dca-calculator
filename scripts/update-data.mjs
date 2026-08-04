@@ -4,6 +4,8 @@ import { resolve } from 'node:path';
 const root = resolve(import.meta.dirname, '..');
 const registryPath = resolve(root, 'public/data/indices.json');
 const args = parseArgs(process.argv.slice(2));
+const REQUEST_TIMEOUT_MS = 15000;
+const RETRY_DELAYS = [0, 1000, 2500, 5000];
 
 function parseArgs(argv) {
   const result = {};
@@ -53,21 +55,39 @@ function mergeMonthly(existing, incoming, inceptionDate) {
   return [...merged.values()].sort((a, b) => a[0].localeCompare(b[0]));
 }
 
-async function fetchJson(url) {
-  const response = await fetch(url, {
-    headers: {
-      Accept: 'application/json, text/plain, */*',
-      'User-Agent': 'Mozilla/5.0 (compatible; dca-calculator-data-update/1.0)'
+function sleep(milliseconds) {
+  return new Promise((resolvePromise) => setTimeout(resolvePromise, milliseconds));
+}
+
+async function fetchWithRetry(url, options = {}) {
+  let latestError;
+  for (const delay of RETRY_DELAYS) {
+    if (delay) await sleep(delay);
+    try {
+      const response = await fetch(url, {
+        ...options,
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+        headers: {
+          Accept: 'application/json, text/plain, */*',
+          'User-Agent': 'Mozilla/5.0 (compatible; dca-calculator-data-update/1.0)',
+          ...options.headers
+        }
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return response;
+    } catch (error) {
+      latestError = error;
     }
-  });
-  if (!response.ok) throw new Error(`HTTP ${response.status}: ${url}`);
-  return response.json();
+  }
+  throw new Error(`${latestError?.message || '请求失败'}：${url}`);
+}
+
+async function fetchJson(url) {
+  return (await fetchWithRetry(url)).json();
 }
 
 async function fetchText(url) {
-  const response = await fetch(url, { headers: { 'User-Agent': 'dca-calculator-data-update/1.0' } });
-  if (!response.ok) throw new Error(`HTTP ${response.status}: ${url}`);
-  return response.text();
+  return (await fetchWithRetry(url)).text();
 }
 
 async function fetchNasdaq(index) {
@@ -118,6 +138,37 @@ async function fetchEastmoney(index) {
     return { date: parseDate(date), close: number(close) };
   });
   return toCompletedMonthly(rows);
+}
+
+function sinaSymbol(index) {
+  const [market, code] = String(index.source.symbol).split('.');
+  if (!code) throw new Error(`${index.name} 的东方财富代码无效：${index.source.symbol}`);
+  return `${market === '1' ? 'sh' : 'sz'}${code}`;
+}
+
+async function fetchSina(index) {
+  const query = new URLSearchParams({
+    symbol: sinaSymbol(index),
+    scale: '240',
+    ma: '5',
+    datalen: '5000'
+  });
+  const payload = await fetchJson(`https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?${query}`);
+  if (!Array.isArray(payload)) throw new Error(`新浪返回异常：${JSON.stringify(payload)}`);
+  return toCompletedMonthly(payload.map((item) => ({
+    date: parseDate(item.day),
+    close: number(item.close)
+  })));
+}
+
+async function fetchChinaIndex(index) {
+  const outcomes = await Promise.allSettled([fetchEastmoney(index), fetchSina(index)]);
+  if (outcomes[0].status === 'fulfilled') return outcomes[0].value;
+  if (outcomes[1].status === 'fulfilled') {
+    console.warn(`${index.name}: 东方财富请求失败，已切换新浪备用源：${outcomes[0].reason.message}`);
+    return outcomes[1].value;
+  }
+  throw new Error(`${index.name} 行情主备源均失败：东方财富 ${outcomes[0].reason.message}；新浪 ${outcomes[1].reason.message}`);
 }
 
 async function fetchFred() {
@@ -182,7 +233,7 @@ async function updateIndex(index) {
   } else if (index.source.provider === 'nasdaq') {
     incoming = await fetchNasdaq(index);
   } else if (index.source.provider === 'eastmoney') {
-    incoming = await fetchEastmoney(index);
+    incoming = await fetchChinaIndex(index);
   } else if (index.source.provider === 'fred') {
     if (!existing) throw new Error(`${index.name} 缺少长期种子数据，请先使用 --file 导入完整 CSV`);
     incoming = await fetchFred(index);
@@ -196,6 +247,7 @@ async function updateIndex(index) {
   if (!incoming.length) throw new Error(`${index.name} 没有获得有效的已完成月份数据`);
   const points = mergeMonthly(existing?.points || [], incoming, index.inceptionDate);
   validatePoints(index, points);
+  const dataChanged = JSON.stringify(existing?.points || []) !== JSON.stringify(points);
 
   const output = {
     schemaVersion: 1,
@@ -204,15 +256,15 @@ async function updateIndex(index) {
     priceType: 'close',
     firstDataDate: points[0][0],
     lastDataDate: points.at(-1)[0],
-    generatedAt: new Date().toISOString(),
-    importedFrom,
+    generatedAt: dataChanged ? new Date().toISOString() : existing.generatedAt,
+    importedFrom: dataChanged ? importedFrom : existing.importedFrom,
     points
   };
   const outputPath = resolve(root, 'public', index.dataFile.replace(/^\//, ''));
   await writeFile(outputPath, `${JSON.stringify(output)}\n`);
   index.firstDataDate = output.firstDataDate;
   index.lastDataDate = output.lastDataDate;
-  console.log(`${index.name}: ${points.length} 个月，${output.firstDataDate} 至 ${output.lastDataDate}`);
+  console.log(`${index.name}: ${points.length} 个月，${output.firstDataDate} 至 ${output.lastDataDate}${dataChanged ? '' : '（无变化）'}`);
 }
 
 function validatePoints(index, points) {
