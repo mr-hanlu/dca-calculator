@@ -69,6 +69,12 @@ npm run data:check
 - 指数 CSV 导入和扩展方法见 [指数历史数据维护文档](docs/INDEX_DATA.md)
 - ETF 免费数据源、CSV 兜底和注册表扩展方法见 [ETF 溢价数据维护文档](docs/ETF_PREMIUM_DATA.md)
 
+### 自动更新
+
+仓库中的 GitHub Actions 工作流 `.github/workflows/update-data.yml` 会在北京时间每天 01:17 自动执行数据更新、数据校验和测试。成功后，工作流会把 `public/data/` 的变化提交到 `main` 分支，由 Cloudflare Pages 自动部署。
+
+也可以在 GitHub 仓库的 **Actions → Update market data → Run workflow** 中手动触发，用于首次启用或排查问题。该工作流需要仓库允许 `GITHUB_TOKEN` 写入内容；如果提交步骤提示权限不足，请前往 **Settings → Actions → General → Workflow permissions**，选择 **Read and write permissions**。
+
 当前内置：标普500、纳斯达克100、沪深300、中证500、中证A500和科创50。
 
 运行计算和数据测试：

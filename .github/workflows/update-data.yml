@@ -1,0 +1,52 @@
+name: Update market data
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Every day at 01:17 Asia/Shanghai (17:17 UTC on the previous day).
+    # Avoiding the top of the hour reduces the chance of GitHub scheduling delays.
+    - cron: "17 17 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-market-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Update data
+        run: npm run data:update
+
+      - name: Validate data
+        run: npm run data:check
+
+      - name: Run tests
+        run: npm test
+
+      - name: Commit updated data
+        run: |
+          git add public/data
+
+          if git diff --cached --quiet; then
+            echo "No data changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: update market data"
+          git push
