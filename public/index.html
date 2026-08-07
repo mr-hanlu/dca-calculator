@@ -35,9 +35,9 @@
     }
 
     main {
-      width: min(1180px, calc(100% - 32px));
+      width: min(1220px, calc(100% - 32px));
       margin: 0 auto;
-      padding: 40px 0;
+      padding: 28px 0 36px;
     }
 
     header {
@@ -63,6 +63,23 @@
     .site-nav a[aria-current="page"] {
       color: var(--accent);
       background: #e6f4f1;
+    }
+
+    .site-nav .sponsor-link,
+    .site-nav .sponsor-link:visited {
+      margin-left: auto;
+      background: var(--accent) !important;
+      color: #ffffff !important;
+      box-shadow: 0 5px 14px rgba(15, 118, 110, 0.18);
+    }
+
+    .site-nav .sponsor-link:hover,
+    .site-nav .sponsor-link:focus-visible,
+    .site-nav .sponsor-link:active,
+    .site-nav .sponsor-link[aria-current="page"] {
+      background: var(--accent-dark) !important;
+      color: #ffffff !important;
+      box-shadow: 0 7px 18px rgba(15, 118, 110, 0.28);
     }
 
     h1 {
@@ -317,11 +334,6 @@
     }
 
     @media (max-width: 760px) {
-      main {
-        width: min(100% - 24px, 520px);
-        padding: 24px 0;
-      }
-
       h1 {
         font-size: 26px;
       }
@@ -335,20 +347,30 @@
       }
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 620px) {
+      main {
+        width: min(100% - 22px, 520px);
+        padding: 20px 0 30px;
+      }
+
       .site-nav {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 4px;
+        gap: 3px;
         margin-bottom: 24px;
       }
 
       .site-nav a {
         min-width: 0;
-        padding: 8px 4px;
-        font-size: 12px;
+        padding: 8px 2px;
+        font-size: 11px;
         text-align: center;
         white-space: nowrap;
+      }
+
+      .site-nav .sponsor-link {
+        grid-column: 1 / -1;
+        margin-left: 0;
       }
 
       .inputs,
@@ -369,6 +391,7 @@
       <a href="/backtest/">历史指数回测</a>
       <a href="/compare/">指数对比</a>
       <a href="/etf-premium/">ETF 溢价</a>
+      <a class="sponsor-link" href="/sponsor/">❤️ 支持开发者</a>
     </nav>
 
     <header>

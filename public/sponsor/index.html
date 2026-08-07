@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="自愿支持定投收益计算器的数据更新、功能改进与持续维护。">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/sponsor/sponsor.css">
+  <link rel="stylesheet" href="/assets/change-calculator.css">
+  <meta name="theme-color" content="#e6f4f1">
+  <title>支持项目 · 定投收益计算器</title>
+</head>
+<body>
+  <main>
+    <nav class="site-nav" aria-label="计算器导航">
+      <a href="/">固定收益估算</a>
+      <a href="/backtest/">历史指数回测</a>
+      <a href="/compare/">指数对比</a>
+      <a href="/etf-premium/">ETF 溢价</a>
+      <a class="sponsor-link" href="/sponsor/" aria-current="page">❤️ 支持开发者</a>
+    </nav>
+
+    <header class="page-header">
+      <p class="eyebrow">Support the project</p>
+      <h1>支持这个小工具</h1>
+      <p class="subtle">定投收益计算器会继续免费开放。如果它对你有帮助，可以自愿支持数据更新、功能改进与日常维护。</p>
+      <div class="promise">
+        <span aria-hidden="true">♥</span>
+        <p><strong>赞助完全自愿</strong>，不会解锁额外功能，也不会影响工具的正常使用。</p>
+      </div>
+    </header>
+
+    <div class="support-grid" aria-label="赞助方式">
+      <section class="payment-panel alipay-panel">
+        <div class="panel-heading">
+          <div>
+            <span class="eyebrow">Alipay</span>
+            <h2>支付宝</h2>
+          </div>
+          <span class="method-tag">推荐</span>
+        </div>
+        <p class="panel-copy">打开支付宝扫描二维码，可自行填写赞助金额。</p>
+        <div class="alipay-image-wrap">
+          <img src="/sponsor/alipay.png" alt="支付宝赞助收款二维码" width="1182" height="1772">
+        </div>
+        <p class="quiet">付款前，请确认支付宝页面显示的收款方信息。</p>
+      </section>
+
+      <section class="payment-panel crypto-panel">
+        <div class="panel-heading">
+          <div>
+            <span class="eyebrow">On-chain</span>
+            <h2>链上赞助</h2>
+          </div>
+          <span class="method-tag method-tag--neutral">主网地址</span>
+        </div>
+        <p class="panel-copy">请严格核对网络和地址。链上转账通常无法撤销。</p>
+
+        <div class="wallet-list">
+          <article class="wallet-card" aria-labelledby="sol-title">
+            <div class="wallet-head">
+              <span class="coin coin--sol" aria-hidden="true">SOL</span>
+              <div><h3 id="sol-title">Solana</h3><p>Solana Mainnet · 仅接收 SOL</p></div>
+            </div>
+            <code id="sol-address">9tguPb7HzyhhhXV8W4MmVv1a2YWkzK7gUG1e3kjpJAC1</code>
+            <div class="wallet-actions">
+              <button type="button" class="copy-button" data-copy="sol-address">复制地址</button>
+              <a href="https://solscan.io/account/9tguPb7HzyhhhXV8W4MmVv1a2YWkzK7gUG1e3kjpJAC1" target="_blank" rel="noopener noreferrer">在 Solscan 核验</a>
+            </div>
+          </article>
+
+          <article class="wallet-card" aria-labelledby="eth-title">
+            <div class="wallet-head">
+              <span class="coin coin--eth" aria-hidden="true">ETH</span>
+              <div><h3 id="eth-title">Ethereum</h3><p>Ethereum Mainnet · 仅接收 ETH</p></div>
+            </div>
+            <code id="eth-address">0xc91b1fAF0F82A1CC4EC2Eb9882EDA79a946Ae6D3</code>
+            <div class="wallet-actions">
+              <button type="button" class="copy-button" data-copy="eth-address">复制地址</button>
+              <a href="https://etherscan.io/address/0xc91b1fAF0F82A1CC4EC2Eb9882EDA79a946Ae6D3" target="_blank" rel="noopener noreferrer">在 Etherscan 核验</a>
+            </div>
+          </article>
+
+          <article class="wallet-card" aria-labelledby="btc-title">
+            <div class="wallet-head">
+              <span class="coin coin--btc" aria-hidden="true">BTC</span>
+              <div><h3 id="btc-title">Bitcoin</h3><p>Bitcoin Mainnet · 仅接收 BTC</p></div>
+            </div>
+            <code id="btc-address">bc1qlvzc7aymxtvxsfagd8uu2yr9f484d7l9hm939j</code>
+            <div class="wallet-actions">
+              <button type="button" class="copy-button" data-copy="btc-address">复制地址</button>
+              <a href="https://mempool.space/address/bc1qlvzc7aymxtvxsfagd8uu2yr9f484d7l9hm939j" target="_blank" rel="noopener noreferrer">在 Mempool 核验</a>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <section class="thanks">
+      <span aria-hidden="true">♥</span>
+      <div>
+        <h2>每一份支持，都会变成维护项目的时间</h2>
+        <p>无论是否赞助，都感谢你使用、反馈和分享定投收益计算器。</p>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="copy-toast" role="status" aria-live="polite" hidden>地址已复制</div>
+  <script src="/sponsor/sponsor.js"></script>
+  <script type="module" src="/assets/change-calculator.js"></script>
+</body>
+</html>
