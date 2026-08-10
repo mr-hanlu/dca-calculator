@@ -2,7 +2,7 @@
 
 一个零运行时依赖的静态投资计算工具，包含固定收益估算、指数历史定投回测、多指数对比、场内 ETF 历史溢价追踪和随手可用的涨跌幅速算，可直接部署到 Cloudflare Workers 静态资源托管。
 
-**在线体验：** [https://dca-calculator.mrhanlu224.workers.dev/](https://dca-calculator.mrhanlu224.workers.dev/)
+**在线体验：** [https://dca-calculator.hanlab.top](https://dca-calculator.hanlab.top)
 
 ## 功能
 
