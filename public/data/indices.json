@@ -10,7 +10,7 @@
       "dataFile": "/data/sp500.json",
       "inceptionDate": "1957-03-04",
       "firstDataDate": "1957-03-29",
-      "lastDataDate": "2026-10-28",
+      "lastDataDate": "2026-10-30",
       "priceType": "price-index",
       "source": {
         "provider": "fred",
